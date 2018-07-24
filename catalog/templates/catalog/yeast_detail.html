@@ -1,0 +1,99 @@
+{% extends "base_detail.html" %}
+
+{% block detail %}
+<p><a href="{% url 'index' %}">Home</a> > <a href="{% url 'yeasts' %}">Yeast List</a> ></p>
+  <h1>Yeast: {{ yeast.name }}</h1>
+  {% if user.is_authenticated %}
+  <div class="btn-toolbar">
+    <a class="btn btn-primary" role="button" href="{% url 'yeast-update' yeast.pk %}">Update yeast</a>
+    <a class="btn btn-primary" role="button" href="{% url 'yeast-delete' yeast.pk %}">Delete yeast</a>
+  </div>
+  {% endif %}
+<div class="table-responsive">
+  <table class="table table-borderless table-sm">
+    <tbody>
+      <tr>
+        <td style="width: 50%"><strong>Type:</strong> {{ yeast.yeast_type }}</td>
+        <td style="width: 50%"><strong>Category:</strong> {{ yeast.get_character_display }}</td>
+      </tr>
+      <tr>
+        <td style="width: 50%"><strong>Attenuation:</strong> {{ yeast.attenuation }}</td>
+        <td style="width: 50%"><strong>Flocculation:</strong> {{ yeast.get_flocculation_display }}</td>
+      </tr>
+      <tr>
+        <td style="width: 50%"><strong>Alcohol Tolerance:</strong> {{ yeast.tolerance }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+</div>
+  <p><strong>Comments:</strong> {{ yeast.comments }}</p>
+  <hr>
+  <h3>Yeast Instances</h3>
+
+<div class="container">
+  <ul id="yeasttabs" class="nav nav-tabs">
+    <li><a class="nav-link active" role="tab" href="#inoculated" data-toggle="tab">Inoculated</a>
+    <li><a class="nav-link" role="tab" href="#used" data-toggle="tab">Used</a>
+  </ul> 
+
+  <div class="tab-content">
+    <div id="inoculated" class="tab-pane fade show active">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th>Storage ID</th>
+            <th>Storage Type</th>
+            <th>Date Inoculated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if yeast.get_inoculated_list %}
+            {% for storageinstance in yeast.get_inoculated_list %}
+            <tr>
+              <td><a href="{% url 'storageinstance-detail' storageinstance.pk %}">{{ storageinstance.id }}</a></td>
+              <td>{{ storageinstance.get_storage_type_display }}</td>
+              <td>{{ storageinstance.date_inoculated }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="3">No inocualted storage with this yeast</td>
+            <tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+      <div id="used" class="tab-pane fade">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>Storage ID</th>
+              <th>Storage Type</th>
+              <th>Date Inoculated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if yeast.get_used_list %}
+              {% for storageinstance in yeast.get_used_list %}
+              <tr>
+                <td><a href="{% url 'storageinstance-detail' storageinstance.pk %}">{{ storageinstance.id }}</a></td>
+                <td>{{ storageinstance.get_storage_type_display }}</td>
+                <td>{{ storageinstance.date_inoculated }}</td>
+              </tr>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <tr>
+              <td colspan="3">No used storage with this yeast</td>
+            <tr>
+          </ul>
+          {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

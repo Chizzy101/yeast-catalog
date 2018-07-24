@@ -1,0 +1,61 @@
+﻿{% extends "base_list.html" %}
+
+{% block list %}
+      <p><a href="{% url 'index' %}">Home</a> ></p>
+      <h1>Yeast List</h1>
+      {% if user.is_authenticated %}
+      <nav>
+        <a class="btn btn-primary" role="button" href="{% url 'yeast-create' %}">Add a new yeast</a>
+      </nav>
+      {% endif %}
+    {% if yeast_list %}
+<div class="container">
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Attenuation</th>
+        <th>Upper Temperature</th>
+        <th>Lower Temerature</th>
+        <th>Flocculation</th>
+        <th>Character</th>
+        <th>Tolerance</th>
+        <th>Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% regroup yeast_list|dictsort:"yeast_type" by yeast_type as yeast_type_list %}
+      {% for yeast_type in yeast_type_list %}
+      <thead class="thead-light">
+        <tr>
+          <th colspan="9">{{ yeast_type.grouper }}</th>
+        </tr>
+      </thead>
+        {% for yeast in yeast_type.list %}
+        <tr>
+          <td><a href="{{ yeast.get_absolute_url}}">{{ yeast.name }}</a></td>
+          <td>{{ yeast.yeast_type }}</td>
+          <td>{{ yeast.attenuation }}</td>
+          <td>{{ yeast.upper_temp }}</td>
+          <td>{{ yeast.lower_temp}}</td>
+          <td>{{ yeast.flocculation }}</td>
+          <td>{{ yeast.character }}</td>
+          <td>{{ yeast.tolerance }}</td>
+          <td class="{% if yeast.get_yeast_count >= 3 %}
+            text-success font-weight-bold
+            {% elif yeast.get_yeast_count == 2 %}
+            text-warning font-weight-bold 
+            {% elif yeast.get_yeast_count < 2 %}
+            text-danger font-weight-bold
+          {% endif %}">{{ yeast.get_yeast_count }}</td>
+        </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+      {% else %}
+  <p>There are no yeasts in the catalogue.</p>
+      {% endif %}
+</div>
+  {% endblock %}

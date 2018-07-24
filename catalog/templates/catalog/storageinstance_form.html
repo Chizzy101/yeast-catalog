@@ -1,0 +1,33 @@
+{% extends "base_form.html" %}
+
+{% block form %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+<div class="table-responsive">
+  <table class="table table-borderless table-sm">
+    {{ form }}
+  </table>
+<div>
+
+<div class="btn-toolbar">
+  <input class="btn btn-primary" role="button" type="submit" value="Update Storage" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</div>
+
+</form>
+
+ <script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "1900:2012",
+      // You can put more options here.
+
+    });
+  });
+  </script>
+</form>
+{% endblock %}

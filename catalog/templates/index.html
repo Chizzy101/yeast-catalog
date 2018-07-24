@@ -1,0 +1,46 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="jumbotron text-center" style="margin-bottom:0"> 
+  <h1>Yeast Catalog Home</h1>
+    <p>Welcome to my <em>Yeast Catalog</em>. This site is where I manage the yeast strains I use for home brewing.</p>
+</div>
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="zoom">
+      {% load static %}
+        <a href="{% url 'yeasts' %}"><img src="{% static "Microscope.svg" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
+      </div>
+      <h2 class="text-center"><a href="{% url 'yeasts' %}">Yeast</a></h2>
+        <ul>
+          <li><strong>Yeast:</strong> {{ num_yeast }}</li>
+          <li><strong>Yeast available:</strong> {{ num_instances_available }}</li>
+        </ul>
+      </div>
+
+    <div class="col-sm-4">
+      <div class="zoom">
+        <a href="{% url 'storage' %}"><img src="{% static "Storage.png" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
+      </div>
+      <h2 class="text-center"><a href="{% url 'storage' %}">Storage</a></h2>
+        <ul>
+          <li><strong>Storage Instances:</strong> {{ num_instances }}</li>
+        </ul>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="zoom">
+        <a href="{% url 'media'%}"><img src="{% static "Media (2).png" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
+      </div>
+      <h2 class="text-center"><a href="{% url 'media'%}">Media</a></h2>
+        <ul>
+          <li><strong>Media Batches:</strong> {{ num_media }}</li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+<a href="{% url 'test-document' %}">Tester</a>
+{% endblock %}

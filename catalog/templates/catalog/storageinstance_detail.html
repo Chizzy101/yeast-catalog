@@ -1,0 +1,44 @@
+{% extends "base_detail.html" %}
+
+{% block detail %}
+<p><a href="{% url 'index' %}">Home</a> > <a href="{% url 'storage' %}">Storage List</a> ></p>
+  <h1>ID: {{ storageinstance.id }}</h1>
+{% if user.is_authenticated %}
+<div class="btn-toolbar">  
+  <a class="btn btn-primary" role="button" href="{% url 'storageinstance-update' storageinstance.pk %}">Update storage</a>
+  <a class="btn btn-primary" role="button" href="{% url 'storageinstance-delete' storageinstance.pk %}">Delete storage</a>
+</div>
+{% endif %}
+<div class="table-responsive">
+  <table class="table table-borderless table-sm"s>
+    <tbody>
+      <tr>
+        {% if storageinstance.yeast %}
+        <td style="width: 50%"><strong>Yeast:</strong> <a href="{% url 'yeast-detail' storageinstance.yeast.pk %}">{{ storageinstance.yeast }}</a></td>
+        {% else %}
+        <td style="width: 50%"><strong>Yeast:</strong> Not inoculated</td>
+        {% endif %}
+        <td style="width: 50%"><strong>Storage Type:</strong> {{ storageinstance.get_storage_type_display }}</td>
+      </tr>
+      <tr>
+        <td style="width: 50%"><strong>Date Created:</strong> {{ storageinstance.date_created }}</td>
+        <td style="width: 50%"><strong>Date Inocualted:</strong> {{ storageinstance.date_inoculated }}</td>
+      </tr>
+      <tr>
+        <td style="width: 50%"><strong>Media:</strong> {{ storageinstance.media }}</td>
+        <td style="width: 50%"><strong>Status:</strong> {{ storageinstance.get_storage_status_display }}</td>
+      </tr>
+      <tr>
+        {% if storageinstance.parent %}
+        <td style="width: 50%"><strong>Parent:</strong> <a href="{% url 'storageinstance-detail' storageinstance.parent.pk %}">{{ storageinstance.parent }}</a></td>
+        {% else %}
+        <td style="width: 50%"><strong>Parent:</strong> No parent identified</td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+<hr>
+  <p><strong>Comments:</strong> {{ storageinstance.comments }}</p>
+<hr>
+{% endblock %}

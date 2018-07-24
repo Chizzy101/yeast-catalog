@@ -1,0 +1,48 @@
+{% extends "base_list.html" %}
+
+{% block list %}
+<p><a href="{% url 'index' %}">Home</a> ></p>
+<h1>Media List</h1>
+{% if user.is_authenticated %}
+<nav>  
+  <a class="btn btn-primary" role="button" href="{% url 'media-create' %}">Add new media</a>
+</nav>
+{% endif %}
+
+<div class="container">
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Date Created</th>
+        <th>Type</th>
+        <th>Volume</th>
+        <th>Gravity</th>
+      </tr>
+    </thead>
+    <tbody>
+{% if media_list %}
+{% regroup media_list|dictsort:"media_type" by get_media_type_display as media_type_list %}
+    {% for media_type in media_type_list %}
+      <thead class="thead-light">
+        <tr>
+          <th colspan="9">{{ media_type.grouper }}</th>
+        </tr>
+      </thead>
+      {% for media in media_type.list %}
+      <tr>
+          <td><a href="{{ media.get_absolute_url }}">{{ media.name }}</a></td>
+          <td>{{ media.date_created }}</td>
+          <td>{{ media.get_media_type_display }}</td>
+          <td>{{ media.volume }}</td>
+          <td>{{ media.gravity }}</td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+    {% else %}
+    <tr>
+      <td>No media in the catalogue.</td>
+    </tr>
+    {% endif %}
+</div>
+{% endblock %}

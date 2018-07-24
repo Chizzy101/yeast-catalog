@@ -1,0 +1,10 @@
+{% extends "base_detail.html" %}
+
+{% block detail %}
+<h1>Delete Media</h1>
+<p>Are you sure you want to delete this media: {{ media }}?</p>
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" action="" value="Yes, delete." />
+</form>
+{% endblock %}

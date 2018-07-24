@@ -1,0 +1,140 @@
+{% extends "base_list.html" %}
+
+{% block list %}
+<p><a href="{% url 'index' %}">Home</a> ></p>
+<h1>Storage List</h1>
+{% if user.is_authenticated %}
+<nav>  
+  <a class="btn btn-primary" role="button" href="{% url 'storageinstance-create' %}">Add new storage</a></p>
+</nav>
+{% endif %}
+
+<div class="container">
+  <ul id="mytabs" class="nav nav-tabs">
+    <li><a class="nav-link active" role="tab" href="#inoculated" data-toggle="tab">Inoculated</a>
+    <li><a class="nav-link" role="tab" href="#available" data-toggle="tab">Available</a></li>
+    <li><a class="nav-link" role="tab" href="#used" data-toggle="tab">Used / Discarded</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="inoculated" class="tab-pane fade show active">
+      <table class="table table-sm table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Storage ID</th>
+            <th>Yeast</th>
+            <th>Date Created</th>
+            <th>Date Inoculated</th>
+            <th>Media</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% if list_storage_inoculated %}
+          {% regroup list_storage_inoculated|dictsort:"storage_type" by get_storage_type_display as storage_type_inoculated_list %}
+          {% for storage_type in storage_type_inoculated_list %}
+            <thead class="thead-light">
+              <tr>
+                <th colspan="6">{{ storage_type.grouper }}</th>
+              </tr>
+            </thead>
+          {% for storage in storage_type.list %}
+            <tr>
+              <td><a href="{% url 'storageinstance-detail' storage.pk %}">{{ storage.id }}</a></td>
+              <td><a href="{% url 'yeast-detail' storage.yeast.pk %}">{{ storage.yeast }}</a></td>
+              <td>{{ storage.date_created }}</td>
+              <td>{{ storage.date_inoculated }}</td>
+              <td><a href="{% url 'media-detail' storage.media.pk %}">{{ storage.media }}<a></td>
+            </tr>
+            {% endfor %}
+          {% endfor %}
+
+          {% else %}
+          <tr>
+            <td>No inoculated storage in the catalog.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <div id="available" class="tab-pane fade">
+      <table class="table table-sm table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Storage ID</th>
+            <th>Yeast</th>
+            <th>Date Created</th>
+            <th>Media</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if list_storage_available %}
+            {% regroup list_storage_available|dictsort:"storage_type" by get_storage_type_display as storage_type_available_list %}
+            
+            {% for storage_type in storage_type_available_list %}
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="6">{{ storage_type.grouper }}</th>
+                </tr>
+              </thead>
+            {% for storage in storage_type.list %}
+              <tr>
+                <td><a href="{% url 'storageinstance-detail' storage.pk %}">{{ storage.id }}</a></td>
+                <td>-</td>
+                <td>{{ storage.date_created }}</td>
+                <td><a href="{% url 'media-detail' storage.media.pk %}">{{ storage.media }}<a></td>
+              </tr>
+              {% endfor %}
+            {% endfor %}
+
+            {% else %}
+            <tr>
+              <td>No available storage</td>
+            </tr>
+            {% endif %}
+          </tbody>
+      </table>
+    </div>
+    <div id="used" class="tab-pane fade">
+      <table class="table table-sm table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Storage ID</th>
+            <th>Yeast</th>
+            <th>Date Created</th>
+            <th>Date Inoculated</th>
+            <th>Media</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if list_storage_used %}
+            {% regroup list_storage_used|dictsort:"storage_type" by get_storage_type_display as storage_type_used_list %}
+            {% for storage_type in storage_type_used_list %}
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="6">{{ storage_type.grouper }}</th>
+                </tr>
+              </thead>
+              {% for storage in storage_type.list %}
+              <tr>
+                <td><a href="{% url 'storageinstance-detail' storage.pk %}">{{ storage.id }}</a></td>
+                <td><a href="{% url 'yeast-detail' storage.yeast.pk %}">{{ storage.yeast }}</a></td>
+                <td>{{ storage.date_created }}</td>
+                <td>{{ storage.date_inoculated }}</td>
+                <td><a href="{% url 'media-detail' storage.media.pk %}">{{ storage.media }}<a></td>
+              </tr>
+              {% endfor %}
+            {% endfor %}
+            {% else %}
+              <tr>
+                <td>No used storage</td>
+              </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>  
+  <script>
+  $("#mytabs").bootstrapDynamicTabs();
+  </script>
+</div>
+{% endblock %}
