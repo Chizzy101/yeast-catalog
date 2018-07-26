@@ -26,9 +26,19 @@ class CreateStorageInstanceForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('parent','date_inoculated',)
 
-class YeastForm(forms.ModelForm):
-    model = Yeast
-    fields = '__all__'
-    widgets = {
-        'comments': Textarea(attrs={'cols': 80, 'rows': 20})
-    }
+class UpdateStorageInstanceForm(forms.ModelForm):
+    """
+    Form for updating an existing storage instance
+    """
+    #Remove self from foreign key list to prevent referencing self as a parent
+    #Need to limit query set to only storage instances with the same yeast strain
+    #JS in the browser is the best way to do this - pass the complete dropdown list to the broswer (code below works fine)_
+    #Then filter the list dynamically when the user selects an item from the "Yeast" listbox on the form to_
+    #filter the listbox source list based on the selected "Yeast"
+    def __init__(self, *args, **kwargs):
+            super(UpdateStorageInstanceForm, self).__init__(*args, **kwargs)
+            self.fields['parent'].queryset = StorageInstance.objects.exclude(id__exact=self.instance.id)
+    
+    class Meta:
+        model = StorageInstance
+        fields = '__all__'

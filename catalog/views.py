@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
-from .forms import CreateStorageInstanceForm
+from .forms import CreateStorageInstanceForm, UpdateStorageInstanceForm
 import datetime #to set initial value of date field to today
 
 # Create your views here.
@@ -16,18 +16,9 @@ def index(request):
     """
     View function for home page of application.
     """
-    # Generate counts of some of the main objects
-    num_yeast=Yeast.objects.all().count()
-    num_instances=StorageInstance.objects.all().count()
-    # Available yeast (status = 'a')
-    num_instances_available=StorageInstance.objects.filter(storage_status__exact='i').count()
-    num_media=Media.objects.all().count()
-    
-    # Render the HTML template index.html with the data in the context variable
     return render(
         request,
         'index.html',
-        context={'num_yeast':num_yeast,'num_instances':num_instances, 'num_media':num_media, 'num_instances_available':num_instances_available},
     )
 
 class YeastListView(generic.ListView):
@@ -62,7 +53,10 @@ def storageList(request):
     return render(
         request,
         'catalog/storageinstance_list.html',
-        context={'list_storage_inoculated':list_storage_inoculated, 'list_storage_available':list_storage_available,'list_storage_used':list_storage_used},
+        context={
+            'list_storage_inoculated':list_storage_inoculated,
+            'list_storage_available':list_storage_available,
+            'list_storage_used':list_storage_used},
     )
 
 class StorageInstanceDetailView(generic.DetailView):
@@ -93,7 +87,8 @@ def create_storage_instance(request):
                 media=form.cleaned_data['media'],
                 storage_status=form.cleaned_data['storage_status'],
                 comments=form.cleaned_data['comments'],
-                )
+            )
+
                 for i in list(range(0,form.cleaned_data['storageinstance_count']))]
             # bulk create of StorageInstance objects based on counter from form
             StorageInstance.objects.bulk_create(create_list)
@@ -102,15 +97,51 @@ def create_storage_instance(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = CreateStorageInstanceForm(initial={'date_created':today,'storage_status':'a','storageinstance_count':1})
+        form = CreateStorageInstanceForm(
+            initial={
+                'date_created':today,
+                'storage_status':'a',
+                'storageinstance_count':1
+            }
+        )
 
-    return render(request, 'catalog/storageinstance_create.html',{'form':form})
+    return render(
+        request,
+        'catalog/storageinstance_create.html',
+        {'form':form}
+    )
 
-class StorageInstanceUpdate(PermissionRequiredMixin, UpdateView):
-    model = StorageInstance
-    fields = '__all__'
-    permission_required = 'catalog.is_staff'
+@login_required
+@permission_required('catalog.can_add_storageinstance')
+def update_storage_instance(request, pk):
+    """
+    View function for updating storage instances
+    """
 
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = UpdateStorageInstanceForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+
+            return HttpResponseRedirect(reverse('storage'))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        storage_instance = StorageInstance.objects.get(pk=pk)
+        form = UpdateStorageInstanceForm(
+            instance=storage_instance
+        )
+
+    return render(
+        request,
+        'catalog/storageinstance_form.html',
+        {'form':form}
+    )
     
 class StorageInstanceDelete(PermissionRequiredMixin, DeleteView):
     model = StorageInstance

@@ -13,31 +13,24 @@
       {% load static %}
         <a href="{% url 'yeasts' %}"><img src="{% static "Microscope.svg" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
       </div>
-      <h2 class="text-center"><a href="{% url 'yeasts' %}">Yeast</a></h2>
-        <ul>
-          <li><strong>Yeast:</strong> {{ num_yeast }}</li>
-          <li><strong>Yeast available:</strong> {{ num_instances_available }}</li>
-        </ul>
+      <h2 class="text-center"><u><a href="{% url 'yeasts' %}" style="color:black">Yeast</a></u></h2>
+        <p class="text-center">Browse yeast strains</p>
       </div>
 
     <div class="col-sm-4">
       <div class="zoom">
-        <a href="{% url 'storage' %}"><img src="{% static "Storage.png" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
+        <a href="{% url 'storage' %}"><img src="{% static "Vial.svg" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
       </div>
-      <h2 class="text-center"><a href="{% url 'storage' %}">Storage</a></h2>
-        <ul>
-          <li><strong>Storage Instances:</strong> {{ num_instances }}</li>
-        </ul>
+      <h2 class="text-center"><u><a href="{% url 'storage' %}" style="color:black">Storage</a></u></h2>
+        <p class="text-center">View storage instances</p>
     </div>
 
     <div class="col-sm-4">
       <div class="zoom">
-        <a href="{% url 'media'%}"><img src="{% static "Media (2).png" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
+        <a href="{% url 'media'%}"><img src="{% static "Flask.svg" %}" class="img-round mx-auto d-block" height="200" width="200"></a>
       </div>
-      <h2 class="text-center"><a href="{% url 'media'%}">Media</a></h2>
-        <ul>
-          <li><strong>Media Batches:</strong> {{ num_media }}</li>
-        </ul>
+      <h2 class="text-center"><u><a href="{% url 'media'%}" style="color:black">Media</a></u></h2>
+        <p class="text-center">View media batches</p>
     </div>
   </div>
 </div>
